@@ -1,0 +1,105 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cout<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '; 
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+ll  const mx=2e5+5; 
+struct node
+{
+    int key,pri,sz; 
+    node *l, *r; 
+    node(){}; 
+    node (int val)
+    {
+        sz=0; key=val; pri=rand(); l=r=NULL; 
+    }
+};
+int cnt(node *cur)
+{
+    return cur? cur->sz: 0; 
+}
+void updsz(node *cur)
+{
+    if(cur==NULL) return ;
+    cur->sz=cnt(cur->l)+cnt(cur->r)+1;
+}
+void split(node *cur, int key, node *&l, node *&r )
+{
+    if(cur==NULL) l=r=NULL; 
+    else if(key<cur->key) split(cur->l,key,l,cur->l), r=cur; 
+    else split(cur->r,key,cur->r,r), l=cur; 
+    updsz(cur);
+}
+void insert(node *&cur, node *it)
+{
+    if(cur==NULL ) cur=it; 
+    else if(it->pri > cur->pri) split(cur,it->key,it->l,it->r), cur=it; 
+    else insert(it->key < cur->key? cur->l: cur->r,it);
+    updsz(cur);
+}
+void merge(node *&cur, node *l, node *r)
+{
+    if(l==NULL or r==NULL) cur=l?l: r; 
+    else if(l->pri > r->pri) merge(l->r,l->r,r), cur=l;
+    else merge(r->l,l,r->l), cur=r;
+    updsz(cur);
+}
+void erase(node *&cur, int key)
+{
+    if(cur->key==key) merge(cur,cur->l,cur->r);
+    else erase(key < cur->key? cur->l: cur->r,key);
+    updsz(cur);
+}
+node * unite(node *l, node *r) //merge two different treap (l and r) and return root of the merged treap
+{
+   if (!l || !r) return (l ? l : r);
+    else
+    {
+        if (l->pri < r->pri) swap(l, r);
+        node* lt, *rt;
+        split(r, l->key,lt, rt);
+        l->l = unite(l->l, lt);
+        l->r = unite(l->r, rt);
+        updsz(l);
+        return l;
+    }
+}
+ll kth(node *cur,ll k)
+{
+   ll d=1+cnt(cur->l);
+   if(d==k) return cur->key; 
+   if(d<=k) return kth(cur->r,k-d);
+   else return kth(cur->l,k);
+}
+node *root[mx]; 
+int main()
+{
+    
+    ll n,q; 
+   cin>>n>>q;
+   for(ll i=1;i<=n;i++)
+   {
+      insert(root[i], new node(i)); //add element i to the treap i
+   }
+   while(q--)
+   {
+      ll b,c; 
+      string a; 
+      cin>>a>>b>>c; 
+      if(a[0]=='U')
+      {
+         root[++n]=unite(root[b],root[c]);
+      }
+      else 
+      {
+         cout<<kth(root[b],c)<<endl; 
+      }
+   }
+}

@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const int mx=100009;
+int ara[mx];
+int tree[mx*4];
+int lazy[mx*4];
+void init(int node,int b, int e)
+{
+    if(b==e)
+    {
+        tree[node]=ara[b];
+        return ;
+    }
+    int mid=(b+e)>>1;
+    init(2*node, b,mid);
+    init(2*node+1,mid+1,e);
+    tree[node]=tree[2*node]+tree[2*node+1];
+}
+void pushdown(int node,int b,int e)
+{
+    if(lazy[node])
+    {
+        tree[node]+=(e-b+1)*lazy[node];
+        if(b!=e)
+        {
+            lazy[node*2]+=lazy[node];
+            lazy[node*2+1]+=lazy[node];
+        }
+        lazy[node]=0;
+    }
+}
+void update(int node,int b, int e, int i, int j,int value)
+{
+    pushdown(node,b,e);
+    if(e<i or b>j) return ;
+    if(b>=i and e<=j)
+    {
+        lazy[node]+=value;
+        pushdown(node,b,e);
+        return ;
+    }
+    int mid=(b+e)>>1;
+    update(2*node, b,mid,i,j,value);
+    update(2*node+1,mid+1,e,i,j,value);
+    tree[node]=tree[2*node]+tree[2*node+1];
+}
+int  query(int node,int b, int e, int i,int j)
+{
+    pushdown(node,b,e);
+    if(e<i or b>j) return 0;
+    if(b>=i and e<=j)
+    {
+        return tree[node];
+    }
+    int mid=(b+e)>>1;
+    int x=query(2*node, b,mid,i,j);
+    int y=query(2*node+1,mid+1,e,i,j);
+    return x+y;
+}
+int  main()
+{
+
+}

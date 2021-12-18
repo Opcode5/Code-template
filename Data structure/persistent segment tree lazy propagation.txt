@@ -1,0 +1,96 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cout<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '
+#define sz(v) (ll)v.size()
+#define srt(v) sort(v.begin(),v.end())
+#define rsrt(v) sort(v.rbegin(),v.rend())
+#define all(v) v.begin(),v.end()
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+const ll mx=100009;
+struct node
+{
+    int val,lazy; 
+    node *l,*r; 
+    node()
+    {
+        val=lazy=0;  l=r=nullptr; 
+    }
+    node(const node* p)
+    {
+        if(p==nullptr)
+        {
+            val=lazy=0;  l=r=nullptr; 
+        }
+        else 
+        {
+            val=p->val; lazy=p->lazy; 
+            l=p->l; r=p->r; 
+        }
+    }
+};
+void pushdown(node *&cur, int b, int e)
+{
+    
+    cur->l=new node(cur->l);
+    cur->r=new node(cur->r);
+    if(cur->lazy)
+    {
+        cur->val+=(e-b+1)*cur->lazy; 
+        if(b!=e)
+        {
+            cur->l->lazy+=cur->lazy; 
+            cur->r->lazy+=cur->lazy; 
+        }
+        cur->lazy=0; 
+    }
+}
+void update(node *&cur, int b, int e, int i, int j, int val)
+{
+    pushdown(cur,b,e);
+    if(b>j or e<i) return ; 
+    if(b>=i and e<=j)
+    {
+        cur->val+=(e-b+1)*val; 
+        cur->l->lazy+=val; 
+        cur->r->lazy+=val; 
+        return ; 
+    }
+    int mid=(b+e)>>1; 
+    update(cur->l,b,mid,i,j,val);
+    update(cur->r,mid+1,e,i,j,val);
+    cur->val=cur->l->val+cur->r->val; 
+}
+int query(node *&cur, int b, int e, int i, int j)
+{
+    pushdown(cur,b,e);
+    if(b>j or e<i) return 0; 
+    if(b>=i and e<=j) return cur->val; 
+    int mid=(b+e)>>1; 
+    int x=query(cur->l,b,mid,i,j);
+    int y=query(cur->r,mid+1,e,i,j);
+    return x+y; 
+}
+node *root[mx]; 
+int ara[mx]; 
+int main()
+{
+    root[0]=new node();
+    int n; cin>>n;
+    for(int i=1;i<=n;i++) cin>>ara[i];
+    for(int i=1;i<=n;i++)
+    {
+        root[i]=new node(root[i-1]);
+        update(root[i],1,n,1,ara[i],5); //add 5 to the range 1 to ara[i]
+    }
+    
+}

@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#define ull unsigned long long
+#define endl '\n'
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define line cout<<"-------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const int mx=100009;
+using namespace __gnu_pbds;
+template <typename T> using os=tree < T, null_type ,less<T>, rb_tree_tag,tree_order_statistics_node_update >;
+
+///find_by_order(k) : returns an iterator of the k-th index
+///order_of_key(k) :  returns the number of elements less than k
+os<int> s;
+int main()
+{
+    s.insert(3);
+    s.insert(2);
+    cout<<s.order_of_key(4)<<endl;
+}

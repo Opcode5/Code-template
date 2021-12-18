@@ -1,0 +1,162 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cout<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '; 
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+ll  const mx=2e5+5; 
+struct node
+{
+    ll key,pri,sz,lazy,sum; 
+    node *l, *r; 
+    bool rev; 
+    node(){}; 
+    node (ll val)
+    {
+        lazy=0,sum=val; 
+        rev=0; sz=0; key=val; pri=rng(); l=r=NULL; 
+    }
+};
+node* root=NULL; 
+int cnt(node *cur)
+{
+    return cur? cur->sz: 0; 
+}
+void push(node *cur)
+{
+    if(cur==NULL) return ; 
+    if(cur and cur->lazy)
+    {
+        cur->key+=cur->lazy; 
+        cur->sum+=cur->lazy*cnt(cur);
+        if(cur->l) cur->l->lazy+=cur->lazy; 
+        if(cur->r) cur->r->lazy+=cur->lazy; 
+        cur->lazy=0; 
+        
+    }
+    if(cur and cur->rev)
+    {
+        cur->rev^=1; 
+        swap(cur->l,cur->r);
+        if(cur->l) cur->l->rev^=1; 
+        if(cur->r) cur->r->rev^=1; 
+    }
+}
+vector<int> ans; 
+void path(node *cur)
+{
+    if(cur==NULL) return ;
+    push(cur);
+    path(cur->l);
+    cout<<cur->key<<' '; 
+    //ans.pb(cur->key);
+    path(cur->r);
+}
+int getsum(node *cur)
+{
+   if(cur==NULL) return 0; 
+   return cur->sum; 
+}
+void update (node *cur) 
+{ 
+   if(cur==NULL) return ;
+   push(cur->l); 
+   push(cur->r);
+   cur->sum=cur->key; 
+   cur->sz=1+cnt(cur->l)+cnt(cur->r);
+   cur->sum+=getsum(cur->l)+getsum(cur->r);
+   
+}
+void split(node *cur,node *&l, node *&r,int pos, int add=0)
+{
+    if(cur==NULL)
+    {
+        l=r=NULL; 
+        return ; 
+    }
+    push(cur);
+    int kk=add+cnt(cur->l); 
+    if(pos<=kk) split(cur->l,l,cur->l,pos,add), r=cur;  //element at pos goes to node r
+    else split(cur->r,cur->r,r,pos,kk+1), l=cur;  
+    update(cur);
+}
+void merge(node * &cur, node *l, node *r)
+{
+    push(l); push(r);
+    if(l==NULL or r==NULL) cur=l?l:r; 
+    else if(l->pri > r->pri) merge(l->r,l->r,r),cur=l;
+    else merge(r->l,l,r->l),cur=r; 
+    update(cur);
+}
+void insert(node *&cur, node *it,int pos)
+{
+    node *l,*r;
+    split(cur,l,r,pos);
+    merge(l,l,it);
+    merge(cur,l,r);
+}
+void erase(node *&cur, int pos)
+{
+    if(cur==NULL) return ; 
+    node *l,*mid,*r; 
+    split(cur,l,mid,pos);
+    split(mid,mid,r,1);
+    merge(cur,l,r);
+}
+void reverse(node *root, int a, int b)
+{
+    node *l,*r,*mid; 
+    split(root,l,mid,a);
+    split(mid,mid,r,b-a+1);
+    mid->rev^=1; 
+    merge(root,l,mid);
+    merge(root,root,r);
+}
+void right_shift(node *root,int a, int b)
+{
+    node *a1; //store 0-> b-1; 
+    node *a2; //store b-> n-1; 
+    split(root,a1,a2,b);
+    node *bb; //store b->b
+    split(a2,bb,a2,1);
+    //now a2 will store b+1-> n-1
+    node *a3; //store 0->a-1
+    split(a1,a3,a1,a);
+    //now a1 will store a->b-1
+    merge(root,a3,bb);
+    merge(a1,a1,a2);
+    merge(root,root,a1);
+}
+void left_shift(node *root,int a, int b)
+{
+    node *a1; //store 0-> b; 
+    node *a2; //store b+1-> n-1; 
+    split(root,a1,a2,b+1);
+    node *a3; //store a+1 -> b
+    split(a1,a1,a3,a+1);
+    //now a1 will store 0 -> a
+    node *aa; //store a -> a
+    split(a1,a1,aa,a);
+    //now a1 will store 0 -> a
+    merge(a1,a1,a3);
+    merge(a1,a1,aa);
+    merge(root,a1,a2);
+}
+// 0 indexing treap
+//merge(a,b,c) b and c will be merged and their root will be stored in a
+//split(a,b,pos) a will store array index from (0 to pos-1), b will store array ( pos to n-1)
+int main()
+{
+   insert(root,new node(4),2); 
+   insert(root, new node(10),0);
+   insert(root, new node(15),1);
+   path(root);
+   cout<<endl; 
+}

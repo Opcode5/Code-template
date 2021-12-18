@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cerr<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '
+#define sz(v) (ll)v.size()
+#define srt(v) sort(v.begin(),v.end())
+#define rsrt(v) sort(v.rbegin(),v.rend())
+#define all(v) v.begin(),v.end()
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+const ll mx=2e6+5; 
+int ara[mx]; 
+int mini[mx][22]; 
+int n; 
+void sparse()
+{
+    for(int i=0;i<n;i++) mini[i][0]=ara[i];
+    for(int j=1;(1LL<<j)<=n;j++)
+    {
+        for(int i=0;i+(1LL<<(j))-1<n;i++)
+        {
+            int d=1LL<<(j-1); 
+            mini[i][j]=min(mini[i][j-1],mini[i+d][j-1]);
+        }
+    }
+}
+int query(int l, int r)
+{
+    int d=__lg(r-l+1);
+    return min(mini[l][d],mini[r-(1LL<<d)+1][d]);
+}
+int main()
+{ 
+    cin>>n; 
+    for(int i=0;i<n;i++) cin>>ara[i]; 
+    sparse();
+    int q; cin>>q;
+    while(q--)
+    {
+        int l,r;
+        cin>>l>>r;
+        cout<<query(l,r)<<endl; 
+    }
+}

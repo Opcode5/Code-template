@@ -1,0 +1,64 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define endl '\n'
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const int mx=100009;
+int ara[mx];
+struct edge
+{
+    int val; 
+    
+}tree[mx*4];
+
+edge merge(edge a, edge b)
+{
+    edge ans; 
+    ans.val=a.val+b.val; 
+    return ans; 
+}
+void init(int node,int b, int e)
+{
+    if(b==e)
+    {
+        tree[node].val=ara[b];
+        return ;
+    }
+    int mid=(b+e)>>1;
+    init(2*node, b,mid);
+    init(2*node+1,mid+1,e);
+    tree[node]=merge(tree[2*node],tree[2*node+1]);
+}
+void update(int node,int b, int e, int i, int value)
+{
+    if(e<i or b>i) return ;
+    if(b>=i and e<=i)
+    {
+        tree[node].val=value;
+        return ;
+    }
+    int mid=(b+e)>>1;
+    update(2*node, b,mid,i,value);
+    update(2*node+1,mid+1,e,i,value);
+    tree[node]=merge(tree[2*node],tree[2*node+1]);
+}
+int  query(int node,int b, int e, int i,int j)
+{
+    if(e<i or b>j) return 0;
+    if(b>=i and e<=j)
+    {
+        return tree[node].val;
+    }
+    int mid=(b+e)>>1;
+    int x=query(2*node, b,mid,i,j);
+    int y=query(2*node+1,mid+1,e,i,j);
+    return x+y;
+}
+int  main()
+{
+
+}

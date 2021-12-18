@@ -1,0 +1,119 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define pb push_back
+#define mod 10000007
+#define mp make_pair
+#define pi acos(-1)
+#define line cout<<"----------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false);cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const ll  mx=100009;
+vector<ll > v[mx];
+int level[mx],heavy[mx],head[mx],pos[mx],parent[mx];
+int curr;
+int tree[mx];
+int ara[mx];
+int n;
+void init(int node, int b, int e)
+{
+    if(b==e)
+    {
+        tree[node]=ara[b];
+        return ;
+    }
+    int mid=(b+e)>>1;
+    init(node*2,b,mid);
+    init(node*2+1,mid+1,e);
+    tree[node]=max(tree[node*2],tree[node*2+1]);
+}
+void update(int node, int b, int e, int i, int val)
+{
+    if(b>i or e<i) return ;
+    if(b==e)
+    {
+        tree[node]=val;
+        return ;
+    }
+    int mid=(b+e)>>1;
+    update(node*2,b,mid,i,val);
+    update(node*2+1,mid+1,e,i,val);
+    tree[node]=max(tree[node*2],tree[node*2+1]);
+}
+int query(int node, int b, int e, int i, int j)
+{
+    if(b>j or e<i) return 0;
+    if(b>=i and e<=j) return tree[node];
+    int mid=(b+e)>>1;
+    return max(query(node*2,b,mid,i,j),query(node*2+1,mid+1,e,i,j));
+}
+int dfs(int s, int par)
+{
+    int ss=1; ///subtree size
+    int maxi=0;
+    for(auto x: v[s])
+    {
+        if(x!=par)
+        {
+            parent[x]=s; level[x]=level[s]+1;
+            int d=dfs(x,s); ///returns the subtree size of x
+            ss+=d;
+            if(d>maxi)
+            {
+                maxi=d; heavy[s]=x;
+            }
+
+        }
+    }
+    return ss;
+}
+void hld(int s, int h)
+{
+    head[s]=h;  ///head of chain in which s lies
+    pos[s]=curr; ///position of s in the segment tree
+    ara[curr++]=s;
+    if(heavy[s]!=-1)
+    {
+        hld(heavy[s],h);  ///increase chain
+    }
+    for(auto x: v[s])
+    {
+        if(x!=parent[s] and x!=heavy[s])
+        {
+            hld(x,x); ///start new chain
+        }
+    }
+}
+int solve(int a, int b)
+{
+    int ans=0;
+    for(; head[a]!=head[b];a=parent[head[a]]) ///maximum log(n) times
+    {
+        if(level[head[a]]<level[head[b]]) swap(a,b);
+        int temp=query(1,0,n-1,pos[head[a]],pos[a]);
+        ans=max(temp,ans);
+    }
+    if(level[a]>level[b]) swap(a,b);
+    ans=max(ans,query(1,0,n-1,pos[a],pos[b]));
+    return ans;
+}
+int main()
+{
+    cin>>n;
+    for(int i=0;i<n-1;i++)
+    {
+        int a,b;
+        cin>>a>>b;
+        v[a].pb(b);
+        v[b].pb(a);
+    }
+    memset(heavy,-1,sizeof heavy);
+    dfs(1,-1);
+    hld(1,1);
+    init(1,0,n);
+    cout<<solve(1,6)<<endl; ///maximum value on the path from a to b
+}
+
