@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+#define ll long long int
+#define mod 1000000007
+#define mp make_pair
+#define pb push_back
+#define pi acos(-1)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+int  prime[1562510];
+bool checkbit(ll x)
+{
+    return (prime[x/64] & (1<<((x%64)/2)));
+}
+void change(ll n)
+{
+     prime[n/64]|=(1<<((n%64)/2));
+}
+void bsieve()
+{
+    for(ll i=3;i*i<=100000000;i+=2)
+    {
+        if(checkbit(i)==false)
+        {
+            for(ll j=i*i;j<=100000000;j+=i*2)
+            {
+                change(j);
+            }
+        }
+    }
+}
+bool test(ll num)
+{
+    return num > 1 && (num == 2 || ((num & 1) && !checkbit(num)));
+}
+int main()
+{
+        bsieve();
+        for(ll i=2;i<=100;i++)
+        {
+            if(test(i))
+            {
+                cout<<i<<' ';
+            }
+
+        }
+}
