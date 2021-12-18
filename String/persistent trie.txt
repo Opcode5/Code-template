@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define line cout<<"----------------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const ll mx=200009; 
+struct edge
+{
+    ll l,r; 
+    edge()
+    {
+        l=0,r=0; 
+    }
+}nxt[mx*50]; 
+int root[mx*50]; 
+ll cnt=1;
+void  init(ll k)
+{
+    ll now=1; 
+    for(ll i=31;i>=0;i--)
+    {
+        bool d=k&(1<<i); 
+        if(d==0) nxt[now].l=++cnt; 
+        else nxt[now].r=++cnt; 
+        now=cnt; 
+    }
+}
+void add(ll k, ll pre)
+{
+    ll now=++cnt;
+    for(ll i=31;i>=0;i--)
+    {
+        bool d=k&(1<<i); 
+        if(d==0) 
+        {
+            nxt[now].l=++cnt; 
+            nxt[now].r=nxt[pre].r; 
+            pre=nxt[pre].l; 
+        }
+        else
+        {
+            nxt[now].r=++cnt; 
+            nxt[now].l=nxt[pre].l; 
+            pre=nxt[pre].r; 
+        }
+        now=cnt; 
+    }
+}
+int main()
+{
+    int n; 
+    cin>>n; 
+    int r,val; 
+    cin>>r>>val; 
+    init(val);
+    root[r]=1; 
+    for(int i=0;i<n;i++)
+    {
+        int a,b,val; 
+        cin>>a>>b>>val;  //add edge a to b, value of b is val
+        root[b]=cnt+1; 
+        add(val,root[a]);
+    }
+}

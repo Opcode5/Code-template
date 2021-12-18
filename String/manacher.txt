@@ -1,0 +1,36 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define line cout<<"----------------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const ll mx=200009; 
+int d[2][mx]; 
+string str; 
+//d[0][i]=total number of odd length palindromes whose centre is i
+//d[1][i]=total number of even length palindromes whose centre is i
+void pre()
+{
+    int n=(int)str.size();
+    for(int j=0;j<2;j++)
+    {
+        for(int i=0,l=0,r=-1;i<n;i++)
+        {
+            int k=(i>r)?(!j):min(d[j][l+r-i+j],r-i+1);
+            while(i-k-j>=0 and i+k<n and str[i-k-j]==str[i+k]) k++; 
+            d[j][i]=k--; 
+            if(i+k>r) l=i-k-j,r=i+k; 
+        }
+    }
+}
+int  main()
+{
+    cin>>str; 
+    pre();
+}

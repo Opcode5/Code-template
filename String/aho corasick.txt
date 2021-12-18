@@ -1,0 +1,106 @@
+#include<bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define endl '\n'
+#define line cout<<"----------------------"<<endl
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const int mx=1e5+5;
+ll node=1;
+ll nxt[mx][68];
+ll link[mx];
+vector<int> mark[mx];
+ll ans[mx];
+ll id;
+void add(string &pat)
+{
+        ll now=0;
+        for(auto x: pat)
+        {
+            ll d=x-'A';
+            if(nxt[now][d]==-1)
+            {
+                link[node]=0;
+                mark[node].clear();
+                nxt[now][d]=node++;
+            }
+            now=nxt[now][d];
+        }
+        mark[now].pb(id);
+}
+void aho()
+{
+    queue<ll> q;
+    ll root=0;
+    q.push(root);
+    while(q.size())
+    {
+        ll a=q.front();
+        q.pop();
+        for(ll i=0;i<60;i++)
+        {
+            ll d=nxt[a][i];
+            if(d!=-1)
+            {
+                if(a==root) link[d]=root;
+                else
+                {
+                    link[d]=nxt[link[a]][i];
+                    ll e=nxt[link[a]][i];
+                    for(auto x: mark[e]) mark[d].pb(x);
+                    /// add all pattern no to node d which ends to its link node
+                }
+                q.push(d);
+            }
+            else
+            {
+                if(a==root) nxt[a][i]=root;
+                else nxt[a][i]=nxt[link[a]][i];
+            }
+        }
+    }
+}
+void match(string &txt)
+{
+   ll now=0;
+   memset(ans,0,sizeof ans);
+   for(ll i=0;i<txt.size();i++)
+   {
+     ll d=txt[i]-'A';
+     now=nxt[now][d];
+     for(auto x: mark[now]) ans[x]=true;
+    }
+}
+int main()
+{
+    ///find whether the pattern is in the text of not
+    ///time complexity(total length of (pattern +text) + no of occurrences)
+    int t;
+    cin>>t;
+    while(t--)
+    {
+      node=1;
+    memset(nxt,-1,sizeof nxt);
+    int n; 
+    string pat,txt; 
+    cin>>txt;
+    cin>>n;
+    for(ll i=0;i<n;i++)
+    {
+        cin>>pat;
+        id=i+1;
+        add(pat);
+    }
+    aho() ;
+    match(txt);
+    for(int i=1;i<=n;i++)
+    {
+        if(ans[i]) cout<<"y"<<endl;
+        else cout<<"n"<<endl ;
+    }
+    }
+}

@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define pb push_back
+#define mod 1000000007
+#define mp make_pair
+#define pi acos(-1)
+#define line cout<<"----------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const ll mx=300009;
+
+int nxt[mx<<1][26],link[mx<<1],len[mx<<1]; 
+int last=1,sz=1;
+void add(int c)
+{
+    int cur=++sz; 
+    int p=last; last=cur; 
+    len[cur]=len[p]+1; 
+    while(p and nxt[p][c]==0) nxt[p][c]=cur,p=link[p];  //add character c to the suffix of p
+    if(p==0) link[cur]=1; 
+    else 
+    {
+        int q=nxt[p][c]; 
+        if(len[q]==len[p]+1) link[cur]=q; //continuous transition , so don't change anything
+        else 
+        {
+            int cl=++sz; ///non continuous transition , so make clone of q
+            len[cl]=len[p]+1; 
+            link[cl]=link[q]; 
+            for(int i=0;i<26;i++) nxt[cl][i]=nxt[q][i]; 
+            while(p and nxt[p][c]==q) nxt[p][c]=cl,p=link[p]; 
+            link[cur]=link[q]=cl; 
+        }
+    }
+}
+int main()
+{
+    string str;
+    cin>>str;
+    for(auto x: str) add(x-'a');
+    cout<<sz<<endl; 
+}

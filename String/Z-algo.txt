@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define endl '\n'
+#define line cout<<"----------------------"<<endl
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+string str,str1 ;
+ll ara[200009];///2*sizeof string, need to memset for every case
+void findz()
+{
+    ll left=0,right=0;
+    for(ll i=1;i<str.size();i++)
+    {
+        if(right>=i) ara[i]=min(ara[i-left],right-i+1);
+        while(i+ara[i]<str.size() and str[ara[i]]==str[i+ara[i]]) ara[i]++;
+        if(i+ara[i]-1>right) left=i,right=i+ara[i]-1;
+    }
+}
+int   main()
+{
+    ///minimum length palindrome by adding character to the end
+    cin>>str1; 
+    str=str1;
+    reverse(str.begin(),str.end());
+    str=str+'#'+str1;
+    findz();
+    ll d=0 ;
+    for( ll i=0;i<str.size();i++)
+    {
+        if(ara[i]+i==str.size())
+        {
+            d=ara[i];
+            break;
+        }
+    }
+    cout<<str1;
+    for(ll i=d;str[i]!='#';i++ )
+    {
+        cout<<str[i];
+    }
+}

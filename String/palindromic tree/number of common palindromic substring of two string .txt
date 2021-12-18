@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define line cout<<"----------------"<<endl;
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define mod 1000000007
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const ll mx=400009;
+ll node,t;
+ll nxt[mx][26] ,link[mx],len[mx];
+ll cnt[mx],cnt1[mx];
+string str;
+void pre()
+{
+    memset(link,0,sizeof link);
+    memset(nxt,0,sizeof nxt);
+    link[1]=link[2]=1;
+    len[1]=-1; len[2]=0;
+    node=t=2;
+}
+
+void add(ll p)
+{
+    while(str[p-len[t]-1]!=str[p]) t=link[t];
+    ll x=link[t];
+    while(str[p-len[x]-1]!=str[p]) x=link[x];
+    ll c=str[p]-'a';
+    if(!nxt[t][c])
+    {
+        nxt[t][c]=++node;
+        len[node]=len[t]+2;
+        link[node]=len[node]==1? 2: nxt[x][c];
+    }
+    t=nxt[t][c];
+}
+int  main()
+{
+
+       cin>>str;
+       pre();
+       for(ll i=0;i<str.size();i++) add(i),cnt[t]++;
+       cin>>str;
+       t=2 ;
+       for(ll i=0;i<str.size();i++) add(i),cnt1[t]++;
+       ll ans=0;
+       for(ll i=node;i>=3;i--)
+       {
+           cnt[link[i]]+=cnt[i];
+           cnt1[link[i]]+=cnt1[i];
+           ans+=cnt[i]*cnt1[i];
+           cnt[i]=cnt1[i]=0;
+       }
+        cout<<ans<<endl;
+}

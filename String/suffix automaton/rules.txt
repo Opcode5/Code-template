@@ -1,0 +1,9 @@
+1. length of distinct substrings ends at node i = (len[link[i]]+1 to len[i])
+2. each substring of S corresponds to some path starting from initial state
+3. all substring that ends at node i are suffixes of the longest substring ends at node i and all these substrings frequency is
+   are same in string S. so length of all strings that end at node i is unique
+4. each node indicates an endposition class
+5. longest substring which ends at node i, which of its longest suffix isn't present in this node but present in 
+   its link, so link[i]= node number which contain the longest suffix
+6. when a character is added to the string, number of new distinct substring that is created is
+	= index of the character(1 base) - len[link[last];

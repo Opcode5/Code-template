@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define endl '\n'
+#define line cout<<"----------------------"<<endl
+#define mp make_pair
+#define mod 1000000007
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+///complexity nlogn
+///no need to clear any ara before every test case
+const int mx=4e6+9;
+int  n, m;
+int ra[mx], tempra[mx];
+int sa[mx], tempsa[mx];
+int c[mx];
+string str;
+void countSort(int k)
+{
+    int maxi = max(300, n);
+    int sum=0;
+    memset(c, 0, sizeof c);
+    for (int i = 0; i < n; i++) c[i + k < n ? ra[i + k] : 0]++;
+    for (int i = sum = 0; i < maxi; i++)
+    {
+        int t = c[i];
+        c[i] = sum;
+        sum += t;
+    }
+    for (int i = 0; i < n; i++) tempsa[c[sa[i] + k < n ? ra[sa[i] + k] : 0]++] = sa[i];
+    for (int i = 0; i < n; i++) sa[i] = tempsa[i];
+}
+
+void makesa()
+{
+    for (int i = 0; i < n; i++)
+    {
+        ra[i] = str[i];
+        sa[i] = i;
+    }
+    for (int k = 1; k < n; k <<= 1)
+    {
+        countSort(k);
+        countSort(0);
+        tempra[sa[0]]=0;
+        int r=0;
+        for (int i = 1; i < n; i++)
+            tempra[sa[i]] =(ra[sa[i]] == ra[sa[i - 1]] && ra[sa[i] + k] == ra[sa[i - 1] + k]) ? r : ++r;
+        for (int i = 0; i < n; i++) ra[i] = tempra[i];
+    }
+}
+int temp[mx];
+int lcp[mx]; ///lcp[i] is the length of longest common prefix of sa[i] and sa[i+1]
+void buildlcp() ///it takes O(n) times
+{
+    for(int i=0; i<n; i++) temp[sa[i]]=i;
+    int k=0;
+    for(int i=0; i<n; i++)
+    {
+        if(temp[i]==n-1)
+        {
+            lcp[temp[i]]=0;
+            k=0;
+            continue;
+        }
+        int j=sa[temp[i]+1];
+        while(i+k<n and j+k<n and str[i+k]==str[j+k]) k++;
+        lcp[temp[i]]=k;
+        if(k) k--;
+    }
+}
+int  main()
+{
+    fast;
+    cin>>str;
+    str+='$'; ///always need to add this for nlogn implementation
+    n = str.size();
+    makesa();
+    buildlcp();
+    for(int i=0; i<(int)str.size(); i++) cout<<sa[i]<<' ';
+    cout<<endl;
+}

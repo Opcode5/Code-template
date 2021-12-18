@@ -1,0 +1,44 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define line cout<<"----------------------------"<<endl;
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const int mx=100009;
+int nxt[mx][26],len[mx],link[mx];
+int node;
+int last; ///node number which contains longest palindromic substring of current prefix
+string str;
+void pre()
+{
+    len[1]=-1,len[2]=0;
+    link[1]=link[2]=1;
+    node=last=2;
+}
+void add(int p)
+{
+    while(str[p-len[last]-1]!=str[p]) last=link[last];
+    int x=link[last];
+    while(str[p-len[x]-1]!=str[p]) x=link[x]; ///find the suffix link of current prefix
+    int c=str[p]-'a';
+    if(nxt[last][c]==false)
+    {
+        nxt[last][c]=++node;
+        len[node]=len[last]+2;
+        link[node]=(len[node]==1)? 2: nxt[x][c]; ///nxt[x][c] is already calculated
+    }
+    last=nxt[last][c] ;
+}
+int  main()
+{
+    ///find the distinct palindromic substring
+    ///complexity O(length of string)
+    cin>>str;
+    pre();
+    for(int i=0;i<(int)str.size();i++) add(i);
+    cout<<node-2<<endl; ///number of distinct palindrome substring
+}

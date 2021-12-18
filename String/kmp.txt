@@ -1,0 +1,42 @@
+#include <iostream>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define line cout<<"----------------------------"<<endl;
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+string text,pat;
+int ara[2*50009];
+int lps()
+{
+    int now=0;
+    ara[0]=now;
+    for(int i=1;i<pat.size();i++)
+    {
+        while(now and pat[now]!=pat[i]) now=ara[now-1];
+        if(pat[now]==pat[i]) ara[i]=++now;
+        else ara[i]=now=0;
+    }
+}
+bool match()
+{
+    int now=0;
+    for(int i=0;i<text.size();i++)
+    {
+        while(now and text[i]!=pat[now]) now=ara[now-1];
+        if(text[i]==pat[now]) now++;
+        else now=0;
+        if(now==pat.size()) return 1;
+    }
+    return 0;
+}
+int main()
+{
+    cin>>text>>pat;
+    lps();
+    if(match()) cout<<"found"<<endl;
+    else cout<<"not found"<<endl;
+}
