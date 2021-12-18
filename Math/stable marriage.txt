@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define endl '\n'
+#define mp make_pair
+#define mod 1000000007
+#define line cout<<"------------------------"<<endl;
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+int n;
+int partner[2*509];
+int m[509];
+int matrix[509*2][509];
+bool check(int women, int men, int engage)
+{
+    for(int i=1;i<=n;i++)
+    {
+        if(matrix[women][i]==men) return true;
+        if(matrix[women][i]==engage) return false;
+    }
+}
+void stable()
+{
+    int f=n;
+    memset(partner,-1,sizeof partner);
+    memset(m,0,sizeof m);
+    while(f){
+    for(int i=1;i<=n;i++)
+    {
+        if(m[i]) continue;
+        int men=i;
+        for(int j=1;j<=n and m[men]==false;j++)
+        {
+            int women=matrix[men][j];
+            if(partner[women]==-1)
+            {
+                m[men]=true;
+                f--;
+                partner[women]=men;
+            }
+            else
+            {
+                int engage=partner[women];
+                if(check(women,men,engage))
+                {
+                    m[men]=true;
+                    partner[women]=men;
+                    m[engage]=false;
+                }
+            }
+        }
+    }
+    }
+}
+int main()
+{
+    fast;
+    cin>>n;
+    for(int i=1;i<=2*n;i++)
+    {
+        for(int j=1;j<=n;j++)
+        {
+            cin>>matrix[i][j];
+        }
+    }
+    stable();
+    for(int i=n+1;i<=2*n;i++)
+    {
+        cout<<partner[i]<<' '<<i<<endl;
+    }
+}
+
