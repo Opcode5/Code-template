@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cout<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '
+#define sz(v) (ll)v.size()
+#define srt(v) sort(v.begin(),v.end())
+#define rsrt(v) sort(v.rbegin(),v.rend())
+#define all(v) v.begin(),v.end()
+#define pb push_back
+#define ff first
+#define ss second
+#define mp make_pair
+#define mod 1000000007
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+const ll mx=100009;
+typedef pair<double,double> pii; 
+pii operator + (const pii &a, const pii &b) {return {a.ff+b.ff,a.ss+b.ss};};
+pii operator - (const pii &a, const pii &b) {return {a.ff-b.ff,a.ss-b.ss};};
+pii operator * (const pii &a, const double &b) {return {a.ff*b,a.ss*b};};
+pii operator / (const pii &a, const double &b) {return {a.ff/b,a.ss/b};};
+
+pii lineLineIntersection(pii a, pii b, pii c, pii d)
+{
+	// Line AB represented as a1x + b1y = c1
+	double a1 = b.ss - a.ss;
+	double b1 = a.ff - b.ff;
+	double c1 = a1*(a.ff) + b1*(a.ss);
+    
+	// Line CD represented as a2x + b2y = c2
+	double a2 = d.ss - c.ss;
+	double b2 = c.ff - d.ff;
+	double c2 = a2*(c.ff)+ b2*(c.ss);
+
+	double determinant = a1*b2 - a2*b1; 
+
+	if (determinant == 0) //lines are parallel
+	{
+		return {FLT_MAX,FLT_MAX};
+	}
+	else
+	{
+		double x = (b2*c1 - b1*c2)/determinant;
+		double y = (a1*c2 - a2*c1)/determinant;
+		return {x,y}; 
+	}
+}
+int main()
+{
+	pii a = {1,1},b = {4,4},c = {1,8},d = {2,4}; 
+    pii point = lineLineIntersection(a,b,c,d);
+	if (point.ff == FLT_MAX && point.second==FLT_MAX)
+	{
+		cout<<"parallel"<<endl; 
+    }
+	else
+    {
+        cout<<point.ff<<' '<<point.ss<<endl;
+    }
+	return 0;
+}
