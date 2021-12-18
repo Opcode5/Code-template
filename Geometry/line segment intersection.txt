@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cout<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '
+#define sz(v) (ll)v.size()
+#define srt(v) sort(v.begin(),v.end())
+#define rsrt(v) sort(v.rbegin(),v.rend())
+#define all(v) v.begin(),v.end()
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+const ll mx=100009;
+struct pt
+{
+	int x;
+	int y;
+};
+// Given three collinear points p, q, r, the function checks if
+// point q lies on line segment 'pr'
+bool onSegment(pt p, pt q, pt r)
+{
+	if (q.x <= max(p.x, r.x) && q.x >= min(p.x, r.x) && q.y <= max(p.y, r.y) && q.y >= min(p.y, r.y)) return true;
+	return false;
+}
+int orientation(pt p, pt q, pt r)
+{
+	int val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+	if (val == 0) return 0; // collinear
+    return (val > 0)? 1: 2; // clock or counterclock wise
+}
+bool doIntersect(pt p1, pt q1, pt p2, pt q2)
+{
+	int o1 = orientation(p1, q1, p2);
+	int o2 = orientation(p1, q1, q2);
+	int o3 = orientation(p2, q2, p1);
+	int o4 = orientation(p2, q2, q1);
+	if (o1>0 and o2>0 and o3>0 and o4>0 and o1 != o2 && o3 != o4) return true; 
+	if (o1 == 0 && onSegment(p1, p2, q1)) return true;
+	if (o2 == 0 && onSegment(p1, q2, q1)) return true;
+	if (o3 == 0 && onSegment(p2, p1, q2)) return true;
+	if (o4 == 0 && onSegment(p2, q1, q2)) return true;
+	return false; 
+}
+int main()
+{
+	struct pt p1 = {1, 1}, q1 = {10, 1};
+	struct pt p2 = {1, 2}, q2 = {10, 2};
+	int a=doIntersect(p1, q1, p2, q2); 
+    if(a) cout<<"YES"<<endl; 
+    else cout<<"NO"<<endl ;
+	return 0;
+}
