@@ -1,0 +1,74 @@
+#include<bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define endl '\n'
+#define mod 1000000007
+#define mod1 1000000009
+#define line cout<<"----------------------"<<endl
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const ll   mx=1000009;
+vector<int> v[mx];
+int sub[mx];
+int visit[mx];
+void dfs(int s, int par)
+{
+    sub[s]=1;
+    for(auto x: v[s])
+    {
+        if(x==par or visit[x]) continue;
+        dfs(x,s);
+        sub[s]+=sub[x];
+    }
+}
+int centroid(int s,int par, int tot)
+{
+    for(auto x: v[s])
+    {
+        if(visit[x] or x==par) continue;
+        if(sub[x]*2>tot) return centroid(x,s,tot);
+    }
+    return s;
+}
+void build(int s) ///O(nlogn)
+{
+    dfs(s,-1);
+    int d=centroid(s,-1,sub[s]);
+    visit[d]=true;
+    for(auto x: v[d])
+    {
+        if(visit[x]) continue;
+        build(x);
+    }
+}
+int  main()
+{
+    ///height of centroid tree is log(n)
+    int n;
+    cin>>n;
+    for(int i=0;i<n-1;i++)
+    {
+        int a,b;
+        cin>>a>>b;
+        v[a].pb(b);
+        v[b].pb(a);
+    }
+    build(1);
+}
+/*
+11
+1 2
+2 3
+2 4
+4 5
+4 6
+1 7
+7 9
+7 8
+8 10
+8 11
+*/
