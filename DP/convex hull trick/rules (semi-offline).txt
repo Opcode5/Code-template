@@ -1,0 +1,15 @@
+bool bad part: 
+-------------
+slope decrease and find minimum: <=
+slope decrease and find maximum: >=
+-----------------------------------
+//slope increase hole sign ulta hobe
+-----------------------------------
+slope increase and find minimum: >=
+slope increase and find maximum: <=
+
+query part: 
+find minimum: >>>>>>>>>>>>>>>>>>>ans<<<<<<<<<<<<<<<<<<<
+find maximum: <<<<<<<<<<<<<<<<<<<ans>>>>>>>>>>>>>>>>>>>
+
+

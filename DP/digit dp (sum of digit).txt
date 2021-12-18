@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define pb push_back
+#define mod 10000007
+#define mp make_pair
+#define pi acos(-1)
+#define line cout<<"----------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+vector<ll >v;
+
+ll dp[16][2][180];
+ll call(ll ind, bool check,ll sum)
+{
+    if(ind==-1) return sum;
+    ll cnt=0;
+    ll limit=check? (v[ind]):9;
+    ll &ret=dp[ind][check][sum];
+    if(ret!=-1 and !check) return ret;
+    for(ll i=0;i<=limit;i++)
+    {
+        bool ck=(i==v[ind])? check:0;
+        cnt+=call(ind-1,ck,sum+i);
+    }
+    if(!check) ret=cnt; ///is used so that we can call this function without memset for another query
+    return cnt;
+}
+ll  get(ll  n)
+{
+    v.clear();
+    while(n)
+    {
+        v.pb(n%10); n/=10;
+    }
+    return call((int)v.size()-1,1,0);
+}
+int  main()
+{
+    ll  t;
+    cin>>t;
+    memset(dp,-1,sizeof dp);
+    while(t--){
+    ll a,b; ///take string for large number
+    cin>>a>>b;
+    cout<<get(b)-get(a-1)<<endl;
+    }
+}

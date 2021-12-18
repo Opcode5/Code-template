@@ -1,0 +1,3 @@
+Keeps upper hull for maximums. 
+add lines with -m and -b and return -ans to 
+make this code working for minimums. 

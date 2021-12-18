@@ -1,0 +1,80 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define pb push_back
+#define mod 1000000007
+#define mp make_pair
+#define pi acos(-1)
+#define line cout<<"----------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const ll mx=200009;
+ll s[mx],p[mx]; 
+ll ara[mx]; 
+struct cht
+{
+    vector<ll> m,c; 
+    bool bad(ll f1, ll f2, ll f3) ///change sign depends on slope and  upper/lower envelop
+    {
+        return 1.0*(c[f3]-c[f1])*(m[f1]-m[f2])>=1.0*(c[f2]-c[f1])*(m[f1]-m[f3]); 
+    }
+    void addline(ll m1,ll c1)
+    {
+        m.pb(m1);
+        c.pb(c1);
+        ll sz=m.size(); 
+        while(sz>=3 and bad(sz-3,sz-2,sz-1))
+        {
+            m.erase(m.end()-2);
+            c.erase(c.end()-2);
+            sz--;
+        }
+    }
+    ll value(ll ind, ll x)
+    {
+        return m[ind]*x+c[ind]; 
+    }
+    ll query(ll x) 
+    {
+        ll low=0,high=(int)m.size()-1; 
+        ll ans=-LLONG_MAX; 
+        while(low<=high)
+        {
+            int mid1 = low + (high-low)/3;
+            int mid2 = high - (high-low)/3; 
+            if(value(mid1,x)>=value(mid2,x)) ///change sign depends on minimum/maximum value
+            {
+                ans=value(mid1,x);
+                high=mid2-1; 
+            }
+            else 
+            {
+                ans=value(mid2,x);
+                low=mid1+1; 
+            }
+        }
+        return ans; 
+    }
+}a; 
+int main()
+{
+    ll n; 
+    cin>>n;
+    for(ll i=1;i<=n;i++) 
+    {
+        cin>>ara[i]; 
+        s[i]=s[i-1]+ara[i]; 
+        p[i]=p[i-1]+i*ara[i]; 
+    }
+    //a.addline(0,0); if query occurs before adding line 
+    ll ans=0; 
+    for(int i=1;i<=n;i++)
+    {
+        a.addline(-i,i*s[i-1]-p[i-1]-s[i-1]);
+        ans=max(ans,a.query(s[i])+p[i]+s[i]);
+    }
+    cout<<ans<<endl; 
+}
