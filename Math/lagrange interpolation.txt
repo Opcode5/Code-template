@@ -1,0 +1,99 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cout<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+using namespace __gnu_pbds;
+template <typename T> using os=tree < T, null_type ,less<T>, rb_tree_tag,tree_order_statistics_node_update >;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+ll  const mx=2e6+5;
+ll add(ll a, ll b)
+{
+    if(a+b<mod) return a+b; 
+    return a+b-mod; 
+}
+ll sub(ll a,ll b)
+{
+    if(a-b<0) return a-b+mod; 
+    return a-b; 
+}
+ll mul(ll a, ll b)
+{
+    return (a*b)%mod; 
+}
+ll bigmod(ll a, ll b, ll m)
+{
+    ll ans=1; 
+    a%=m; 
+    while(b)
+    {
+        if(b&1) ans=(ans*a)%m; 
+        b>>=1; 
+        a=(a*a)%m; 
+    }
+    return ans; 
+}
+ll facto[mx],invfacto[mx]; 
+ll pre[mx],suf[mx]; 
+void pre1()
+{
+    facto[0]=1; 
+    for(ll i=1;i<mx;i++) facto[i]=(facto[i-1]*i)%mod; 
+    invfacto[0]=1; 
+    invfacto[1]=1; 
+    for(ll i=2;i<mx;i++) invfacto[i]=mod-(mod/i)*invfacto[mod%i]%mod;  ///pre calculate mod inverse i
+    for(ll i=1;i<mx;i++) invfacto[i]=(invfacto[i-1]*invfacto[i])%mod; ///precalculate inverse factorial 
+}
+ll x,k; 
+vector<ll> f; 
+ll get()
+{
+    if(x<=k+1) return f[x]; 
+    else
+    {
+        x%=mod; 
+        ll sum=0; 
+        ll n=(ll)f.size()-1; 
+        pre[0]=1; 
+        suf[k+1]=1; 
+        for(ll i=0;i<=k+1;i++) pre[i+1]=mul(pre[i],(x-i));
+        for(ll i=k+1;i>=1;i--) suf[i-1]=mul(suf[i],(x-i));
+        for(ll i=0;i<=n;i++)
+        {
+            ll lobb=mul(pre[i],suf[i]);
+            lobb=mul(lobb,invfacto[i]);
+            lobb=mul(lobb,invfacto[n-i]);
+            ll anss=mul(f[i],lobb);
+            if((n-i)%2)  sum=sub(sum,anss);
+            else sum=add(sum,anss);
+        }
+        return sum; 
+    }
+}
+int  main()
+{   
+    fast; 
+    //find 1^k + 2^k + 3^k + .... + n^k
+    //sum is a k+1 degree polynomial, so need (k+2) terms to get the actual result
+    pre1();
+    cin>>x>>k; 
+    ll sum=0; 
+    f.pb(0);
+    for(ll i=1;i<=k+1;i++)
+    {
+        sum=add(sum,bigmod(i,k,mod));
+        f.pb(sum);
+    }
+    cout<<get()<<endl; 
+    
+}

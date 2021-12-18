@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define ull unsigned long long
+#define pb push_back
+#define mp make_pair
+#define mod 1000009
+#define line cout<<"--------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+ll dm;
+struct matrix
+{
+    ll  mat[20][20];
+    matrix()
+    {
+        memset(mat,0,sizeof mat);
+    }
+    matrix operator *(const matrix &a) const
+    {
+        matrix d;
+        for(ll i=0;i<dm;i++)
+        {
+            for(ll j=0;j<dm;j++)
+            {
+                for(ll k=0;k<dm;k++)
+                {
+                    d.mat[i][j]+=(mat[i][k]*a.mat[k][j])%mod;
+                    d.mat[i][j]%=mod;
+                }
+            }
+        }
+        return d;
+    }
+    void identity()
+    {
+        for(ll  i=0;i<dm;i++)
+        {
+            mat[i][i]=1;
+        }
+    }
+};
+matrix power(matrix c,ll b)
+{
+    matrix d;
+    d.identity();
+    while(b)
+    {
+        if(b&1) d=d*c;
+        b>>=1;  c=c*c;
+    }
+    return d;
+}
+int  main()
+{
+    ///dm->dimension
+    ///nth fibonacci
+    ///complexity O(d^3 log(n)) where d is dimension of matrix
+    matrix a;
+    int n;
+    while(cin>>n){
+        dm=2;
+        a.mat[0][0]=1; a.mat[0][1]=1;
+        a.mat[1][0]=1; a.mat[1][1]=0;
+        if(n==1 or n==2) cout<<1<<endl;
+        else {
+            a=power(a,n-2);
+            ll  ans=a.mat[0][0]+a.mat[0][1];
+            cout<<ans<<endl;
+        }
+    }
+}

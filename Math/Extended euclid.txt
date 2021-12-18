@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+int extended(int a, int b,int &x, int &y)
+{
+    if(b==0)
+    {
+        x=1; y=0; return a;
+    }
+    int x1,y1;
+    int d=extended(b,a%b,x1,y1);
+    x=y1;
+    y=x1-(a/b)*y1;
+    return d;
+}
+int   main()
+{
+    int a,b;
+    cin>>a>>b;
+    int x,y;
+    int ans=extended(a,b,x,y);
+    cout<<x<<' '<<y<<endl;
+}

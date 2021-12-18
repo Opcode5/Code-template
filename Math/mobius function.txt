@@ -1,0 +1,32 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+int mob[10009];
+int mobius()
+{
+    /// 1 when n==1
+    /// 0 when there is a prime more than once
+    /// (-1)^p here p is the total distinct prime factor
+
+    mob[1]=1;
+    for(int i=1;i<=10008;i++)
+    {
+        for(int j=2*i;j<=10003;j+=i)
+        {
+            mob[j]-=mob[i];
+        }
+    }
+}
+int main()
+{
+    mobius();
+    int n;
+    cin>>n;
+    cout<<mob[n]<<endl;
+}

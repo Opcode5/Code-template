@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const int mx=1000009;
+bitset<1000009>prime; 
+int pr[mx]; 
+vector<int> v;
+void sieve()
+{
+    prime[1]=1; 
+    for(int i=4;i<mx;i+=2) prime[i]=1; 
+    for(int i=3;i*i<mx;i+=2)
+    {
+        if(prime[i]==false)
+        {
+            for(int j=i*i;j<mx;j+=2*i)
+            {
+
+                prime[j]=true;
+            }
+        }
+    }
+    v.pb(2); 
+    for(int i=3;i<mx;i+=2) if(prime[i]==false ) v.pb(i); 
+}
+void pre()
+{
+    for(int i=1;i<mx;i++)
+    {
+        if(i%2==0) pr[i]=2; 
+        else pr[i]=i; 
+    }
+    for(int i=3;i<mx;i+=2)
+    {
+        if(pr[i]==i) 
+        {
+            for(int j=i;j<mx;j+=i) pr[j]=i; 
+        }
+    }
+}
+int main()
+{
+    sieve();
+}

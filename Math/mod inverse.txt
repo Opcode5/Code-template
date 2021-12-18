@@ -1,0 +1,43 @@
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cout<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '
+#define pb push_back
+#define mp make_pair
+#define mod 998244353 
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+using namespace __gnu_pbds;
+template <typename T> using os=tree < T, null_type ,less<T>, rb_tree_tag,tree_order_statistics_node_update >;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+ll  const mx=3e5+5;
+ll ara[mx]; 
+ll facto[mx],invfacto[mx]; 
+void pre()
+{
+    facto[0]=1; 
+    for(ll i=1;i<mx;i++) facto[i]=(facto[i-1]*i)%mod; 
+    invfacto[0]=1; 
+    invfacto[1]=1; 
+    for(ll i=2;i<mx;i++) invfacto[i]=mod-(mod/i)*invfacto[mod%i]%mod;  ///pre calculate mod inverse i
+    for(int i=1;i<mx;i++) invfacto[i]=(invfacto[i-1]*invfacto[i])%mod; ///precalculate inverse factorial 
+}
+ll ncr(ll n, ll r)
+{
+    if(r>n) return 0; 
+    ll ans=facto[n]*invfacto[n-r]; 
+    ans%=mod; 
+    ans=(ans*invfacto[r])%mod; 
+    return ans; 
+}
+int main()
+{
+    pre();
+}
+   

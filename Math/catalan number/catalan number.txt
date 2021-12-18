@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define mod 100000007
+#define line cout<<"------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+ll cat[1120];
+ll supcat[1120];
+void pre()
+{
+    cat[0]=1; 
+    for(ll i=1;i<=50;i++)
+    {
+        for(ll j=0;j<i;j++)
+        {
+            cat[i]+=cat[j]*cat[i-1-j];
+        }
+    }
+    supcat[0]=1; 
+    for(ll i=1;i<=50;i++)
+    {
+        supcat[i]=supcat[i-1];
+        for(ll j=1;j<i;j++)
+        {
+            supcat[i]+=supcat[j]*supcat[i-j];
+        }
+    }
+    supcat[1]=2; 
+    for(ll i=1;i<=50;i++) supcat[i]/=2; 
+}
+int main()
+{
+    pre();
+}
+
