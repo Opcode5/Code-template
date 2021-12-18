@@ -1,0 +1,3 @@
+minimum vertex cover (cover all edges)		: bpm
+minimum edge cover (cover all vertices)		: n-bpm
+size of maximum independent set			: n-bpm

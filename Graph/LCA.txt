@@ -1,0 +1,72 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+int n;
+#define mx 100002
+int level[mx];
+int table[mx][22];
+vector<int>v[mx];
+void dfs(int curr,int pre)
+{
+    if(pre==-1) level[curr]=0; 
+    else level [curr]=level[pre]+1;
+    table[curr][0]=pre;
+    for(auto x: v[curr])
+    {
+        if(x==pre) continue;
+        dfs(x,curr);
+    }
+}
+int lca(int p, int q)
+{
+      if(level[p]<level[q]) swap(p,q);
+      int log=log2(level[p]);
+      for( int i=log;i>=0;i--)
+      {
+          if(level[p]-(1<<i)>=level[q])
+          {
+              p=table[p][i];
+          }
+      }
+      if(p==q) return p ;
+        for( int i=log;i>=0;i--)
+      {
+          if(table[p][i]!=-1 and table[p][i]!=table[q][i])
+          {
+              p=table[p][i],q=table[q][i];
+          }
+      }
+      return table[p][0];
+}
+void sparse()
+{
+    for(int j=1;1<<j<=n;j++)
+      {
+          for(int i=0;i<n;i++) ///node number starts from 0
+          {
+              if(table [i][j-1]!=-1)
+              {
+                  table [i][j]=table [table[i][j-1]][j-1];
+              }
+          }
+      }
+}
+int main()
+{
+    n=6;
+	v[0].pb(2);
+	v[2].pb(3);
+	v[3].pb(4);
+	v[4].pb(5);
+	v[4].pb(6);
+	memset(table,-1,sizeof table);
+	dfs(0,-1);
+	sparse();
+	printf( "%d\n",lca(6,5) );
+	return 0;
+}

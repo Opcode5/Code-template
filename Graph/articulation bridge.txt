@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define line cout<<"--------------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const int mx=10009;
+int n;
+vector<int>v[mx];
+int dis[mx],low[mx];
+bool visit[mx];
+int t=0;
+set<pair<int,int> > edge;
+void dfs( int s, int par)
+{
+
+    dis[s]=low[s]=t++;
+    int child=0;
+    visit[s]=true;
+    for(auto x: v[s])
+    {
+        if(x==par) continue;
+        if(visit[x])
+        {
+            low[s]=min(low[s],dis[x]);
+            continue;
+        }
+        dfs(x,s);
+        child++;
+        low[s]=min(low[s],low[x]);
+        if(dis[s]<low[x])
+        {
+            edge.insert(mp(min(s,x),max(s,x)));
+        }
+    }
+}
+int  main()
+{
+        int m ;
+        cin>>n>>m;
+        for(int i=0;i<m;i++)
+        {
+            int a,b;
+            cin>>a>>b;
+            v[a].pb(b);
+            v[b].pb(a);
+        }
+        for(int i=0;i<n;i++)
+        {
+            if(visit[i]==false)
+            {
+                dfs(i,-1);
+            }
+        }
+        printf("%d critical links\n",edge.size());
+        for(auto x: edge)
+        {
+            printf("%d - %d\n",x.first,x.second);
+        }
+
+}

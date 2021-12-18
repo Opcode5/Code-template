@@ -1,0 +1,130 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("cooling.in","r",stdin)
+#define fileout freopen("cooling.out","w",stdout)
+using namespace std;
+const ll  mx = 50009 ;
+const ll  INF = 1000000000 ;
+struct edge
+{
+    ll  a, b, cap, flow,id;
+};
+ll  src,snk,level[mx],ptr[mx] ;
+vector<edge>e;
+vector<ll >g[mx];
+void add(ll  a,ll  b,ll  cap,ll  id)
+{
+    edge e1 = { a, b, cap, 0 ,id} ;
+    edge e2 = { b, a, 0 , 0 ,-1} ;
+    g[a].push_back((ll )e.size());
+    e.push_back(e1);
+    g[b].push_back((ll )e.size());
+    e.push_back(e2);
+}
+
+bool bfs()
+{
+    ll  s = src , t = snk ;
+    queue < ll  > q ;
+    q.push(s);
+    memset(level,-1,sizeof(level));
+    level[s]=0 ;
+    while (!q.empty())
+    {
+        ll  u=q.front() ;
+        q.pop() ;
+        for(ll  i=0; i<g[u].size(); i++)
+        {
+            ll  id=g[u][i];
+            ll  v=e[id].b;
+            if(level[v]==-1&&e[id].flow<e[id].cap)
+            {
+                q.push(v) ;
+                level[v]=level[u]+1 ;
+            }
+        }
+    }
+    return level[t]!=-1 ;
+}
+
+ll  dfs(ll  u,ll  flow)
+{
+    if (!flow)  return 0 ;
+    if ( u==snk )  return flow ;
+    for(; ptr[u]<g[u].size(); ptr[u]++)
+    {
+        ll  id = g[ u][ptr[u]];
+        ll  v =  e[id].b ;
+        if ( level[v] != level[u]+1 )  continue ;
+        ll  tempflow = dfs (v,min (flow,e[id].cap-e[id].flow)) ;
+        if (tempflow)
+        {
+            e [id].flow+=tempflow ;
+            e [id^1].flow-=tempflow ;
+            return tempflow ;
+        }
+    }
+    return 0 ;
+}
+
+ll  dinic()
+{
+    ll  flow = 0 ;
+    while(bfs())
+    {
+        memset(ptr,0,sizeof(ptr) ) ;
+        while ( ll  tempflow= dfs(src,INF ) )
+            flow += tempflow ;
+    }
+    return flow ;
+}
+ll  in[mx],out[mx];
+struct path
+{
+  ll  a,b,c,d;
+};
+vector<path> am;
+ll  ans1[mx];
+void dis()
+{
+    static ll  cs=1;
+    cout<<"Case "<<cs++<<": ";
+}
+int   main()
+{
+    ll  n,m;
+    cin>>n>>m;
+    src=0; snk=n+1;
+    ll  ans=0;
+    for(ll  i=1;i<=m;i++)
+    {
+        ll  a,b,c,d;
+        cin>>a>>b>>c>>d;
+        add(a,b,d-c,i);
+        in[b]+=c ;
+        out[a]+=c;
+        am.pb({a,b,c,d});
+    }
+    for(ll  i=1;i<=n;i++)
+    {
+        ans+=in[i];
+        add(src,i,in[i],-1);
+        add(i,snk,out[i],-1);
+    }
+        if(ans==dinic())
+        {
+            cout<<"YES"<<endl;
+            for(auto x: e)
+            {
+                if(x.id!=-1)
+                {
+                    ans1[x.id-1]=x.flow+am[x.id-1].c;
+                }
+            }
+            for(ll  i=0;i<m;i++) cout<<ans1[i]<<endl;
+        }
+        else cout<<"NO"<<endl;
+}

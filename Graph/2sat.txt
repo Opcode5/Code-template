@@ -1,0 +1,97 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define endl '\n'
+#define line cout<<"--------------------------"<<endl
+#define dd(x) cout<<#x<<" = "<<x<<' '
+#define sz(v) (ll)v.size()
+#define srt(v) sort(v.begin(),v.end())
+#define rsrt(v) sort(v.rbegin(),v.rend())
+#define all(v) v.begin(),v.end()
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+const ll mx=500009;
+void yes() {cout<<"YES"<<endl; }
+void no() {cout<<"NO"<<endl; }
+vector<int> v[mx*2],rev[mx*2];
+int scc[mx*2];
+bool visit[mx*2];
+stack<int> st;
+void dfs(int s)
+{
+    visit[s]=true;
+    for(auto x: v[s] )
+    {
+        if(visit[x]==false)
+        {
+            dfs(x);
+        }
+    }
+    st.push(s);
+}
+void dfs1(int s,int no)
+{
+    visit[s]=true;
+    scc[s]=no; 
+    for(auto x: rev[s])
+    {
+        if(visit[x]==false)
+        {
+            dfs1(x,no);
+        }
+    }
+}
+int n; 
+int ans[mx]; 
+bool twosat()
+{
+    for(int i=0;i<2*n;i++)
+     {
+         if(visit[i]==false)
+         {
+             dfs(i);
+         }
+     }
+     int mark=0;
+     memset(visit,0,sizeof visit);
+     while(st.size())
+     {
+         int a=st.top();
+         st.pop();
+         if(visit[a]==false)
+         {
+             mark++; 
+             dfs1(a,mark);
+         }
+     }
+    for(int i=0;i<n;i++)
+    {
+        if (scc[2*i] == scc[2*i+1]) return false;
+        ans[2*i] = scc[2*i] > scc[2*i+1];
+    }
+    return true;
+}
+void add(int a, int b)
+{
+    v[a].pb(b);
+    rev[b].pb(a);
+} 
+int  main()
+{
+    cin>>n; 
+    for(int i=0;i<n;i++)
+    {
+        int a,b; 
+        cin>>a>>b; 
+        add(a,b);
+    }
+    if(twosat()==0) no();
+    else yes();
+}
+

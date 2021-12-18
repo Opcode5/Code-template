@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+ll n,m;
+vector<pair<int,int> > v[503];
+ll t;
+ll s;
+ll visit[504];
+ll dis[504];
+void mst()
+{
+    memset(visit,0,sizeof visit);
+    memset(dis,0,sizeof dis);
+    priority_queue<pair<int,int> > pq;
+    pq.push(mp(-0,s));
+    ll ans=0;
+    while(pq.size())
+    {
+        ll cost=-pq.top().first;
+        ll node=pq.top().second;
+        pq.pop();
+        if(visit[node]) continue;
+        visit[node]=true;
+        if(cost>ans) ans=cost;
+        dis[node]=ans;
+        for(auto x: v[node])
+        {
+            if(visit[x.first]==false)
+            {
+                pq.push(mp(-x.second,x.first));
+            }
+        }
+
+    }
+}
+int  main()
+{
+    ll cs;
+    scanf("%lld",&cs);
+    for(ll j=1;j<=cs;j++){
+    scanf("%lld%lld",&n,&m);
+    for(ll i=0;i<m;i++)
+    {
+        ll a,b,c;
+        scanf("%lld%lld%lld",&a,&b,&c);
+        v[a].pb(mp(b,c));
+        v[b].pb(mp(a,c));
+    }
+    scanf("%lld",&s);
+    mst();
+    printf("Case %d:\n",j);
+    for(ll i=0;i<n;i++)
+    {
+        if(i!=s and dis[i]==0)
+        {
+            printf("Impossible\n");
+            continue;
+        }
+      printf("%lld\n",dis[i]);
+
+    }
+    for(ll i=0;i<n;i++) v[i].clear();
+    }
+}

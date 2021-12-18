@@ -1,0 +1,82 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define line cout<<"--------------------------------"<<endl
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+vector<int> v[10009],rev[10009],scc[10009];
+bool visit[10009];
+stack<int> st;
+void dfs(int s)
+{
+    visit[s]=true;
+    for(auto x: v[s] )
+    {
+        if(visit[x]==false)
+        {
+            dfs(x);
+        }
+    }
+    st.push(s);
+}
+void dfs1(int s,int no)
+{
+    visit[s]=true;
+    scc[no].pb(s);
+    for(auto x: rev[s])
+    {
+        if(visit[x]==false)
+        {
+            dfs1(x,no);
+        }
+    }
+}
+int  main()
+{
+	///only for directed graph
+     int n;
+     scanf("%d",&n);
+     set<int> s;
+     for(int i=0;i<n;i++)
+     {
+         int  a,b;
+         scanf("%d%d",&a,&b);
+         v[a].pb(b);
+         rev[b].pb(a);
+         s.insert(a);
+         s.insert(b);
+     }
+     for(auto x: s)
+     {
+         if(visit[x]==false)
+         {
+             dfs(x);
+         }
+     }
+     int mark=0;
+     memset(visit,0,sizeof visit);
+     while(st.size())
+     {
+         int a=st.top();
+         st.pop();
+         if(visit[a]==false)
+         {
+             mark++;
+             dfs1(a,mark);
+         }
+     }
+     for(int i=1;i<=mark;i++)
+     {
+         cout<<i<<": ";
+         for(auto x:scc[i])
+         {
+             cout<<x<<' ';
+         }
+         cout<<endl;
+     }
+}

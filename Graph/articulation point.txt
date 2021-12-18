@@ -1,0 +1,53 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define line cout<<"------------------------"<<endl;
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+vector<int> v[100];
+bool visit[100];
+int t ;
+int dis[100];
+int low[100];
+bool ans[100];
+void dfs(int s,int par)
+{
+    dis[s]=t++; 
+    low[s]=dis[s];
+    visit[s]=true;
+    int child=0;
+    for(auto x: v[s])
+    {
+        if(x==par) continue;
+        if(visit[x])
+        {
+            low[s]=min(low[s],dis[x]);
+            continue;
+        }
+        dfs(x,s);
+        low[s]=min(low[s],low[x]);
+        if(dis[s]<=low[x] and par!=-1)
+        {
+            ans[s]=true; ///one point can be counted more than once
+        }
+        child++;
+        if(child>1 and par==-1) ans[s]=true;
+    }
+}
+int  main()
+{
+        v[1].pb(2);
+        v[2].pb(1);
+        v[2].pb(3);
+        v[3].pb(2);
+        dfs(1,-1);
+        for(int i=1;i<=7;i++)
+        {
+            if(ans[i]) cout<<i<<' ' ;
+        }
+}

@@ -1,0 +1,90 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const ll  mx=1009;
+const ll inf=(ll)1e15;
+vector<ll > v[mx];
+ll  n, match[mx], dis[mx];
+void add(ll  a, ll  b)
+{
+    v[a].pb(b);
+}
+bool  bfs()
+{
+    queue<ll > q;
+    for(ll  i=1;i<=n;i++)
+    {
+        if(match[i]==0)
+        {
+            dis[i]=0; q.push(i);
+        }
+        else dis[i]=inf;
+    }
+    dis[0]=inf;
+    while(q.size())
+    {
+        ll  a=q.front(); q.pop();
+        for(auto x: v[a])
+        {
+            if(dis[match[x]]==inf)
+            {
+                dis[match[x]]=dis[a]+1;
+                q.push(match[x]);
+            }
+        }
+    }
+    return dis[0]!=inf;
+}
+bool dfs(ll  u)
+{
+    if(u)
+    {
+        for(auto x: v[u])
+        {
+            if(dis[match[x]]==dis[u]+1)
+            {
+                if(dfs(match[x]))
+                {
+                    match[x]=u;
+                    match[u]=x;
+                    return true;
+                }
+            }
+        }
+        dis[u]=inf;
+        return false;
+    }
+    return true;
+}
+ll  hopcroft()
+{
+    ll  ans=0;
+    while(bfs())
+    {
+        for(ll  i=1;i<=n;i++)
+        {
+            if(match[i]==false and dfs(i))
+            {
+                ans++;
+            }
+        }
+    }
+    return ans;
+}
+int  main()
+{
+    ///complexity O(sqrt(v)*e)
+    ///find maximum matching in unweighted graph
+    n=4; ///elements of the left side, start from 1
+    add(1,6); add(1,7);
+    add(2,5); add(3,6);
+    add(4,6); add(4,8);
+    cout<<hopcroft()<<endl; ///ans 4
+}
+

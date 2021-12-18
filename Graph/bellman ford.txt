@@ -1,0 +1,64 @@
+#include<bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define endl '\n'
+#define line cout<<"----------------------"<<endl
+#define mp make_pair
+#define mod 1000000007
+#define fast ios_base::sync_with_stdio(false); cin.tie(NULL)
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+struct edge
+{
+    int a,b,c;
+};
+vector<edge> v;
+ll dis[1009];
+int n,m;
+void bford()
+{
+    for(int i=0;i<n;i++) dis[i]=INT_MAX;
+    dis[0]=0;
+    for(int i=0;i<n-1;i++)
+    {
+        for(int j=0;j<v.size();j++)
+        {
+            int a=v[j].a;
+            int b=v[j].b;
+            int c=v[j].c;
+            if(dis[a]==INT_MAX) continue ;
+            if(dis[a]+c<dis[b])
+            {
+                dis[b]=dis[a]+c;
+            }
+        }
+    }
+    int k=0;
+    for(int j=0;j<v.size();j++)
+        {
+            int a=v[j].a;
+            int b=v[j].b;
+            int c=v[j].c;
+            if(dis[a]+c<dis[b])
+            {
+                k=1;
+                break;
+            }
+        }
+    if(k) cout<<"find negative cycle"<<endl;
+    else cout<<"no negative cycle"<<endl;
+}
+int  main()
+{
+    ///check negative cycle
+    cin>>n>>m;
+    for(int i=0;i<m;i++)
+    {
+        edge d;
+        cin>>d.a>>d.b>>d.c;
+        v.pb(d);
+    }
+    bford();
+}

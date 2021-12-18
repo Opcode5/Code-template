@@ -1,0 +1,27 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define ull unsigned long long
+#define pb push_back
+#define mp make_pair
+#define mod 1000009
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+ll bigmod(ll a, ll b,ll m)
+{
+    ll ans=1;a%=m;
+    while(b)
+    {
+        if(b&1) ans=(ans*a)%m;
+        b>>=1;
+        a=(a*a)%m;
+    }
+    return ans;
+}
+int  main()
+{
+    ll a,b,m;
+    cin>>a>>b>>m;
+    cout<<bigmod(a,b,m)<<endl;
+}

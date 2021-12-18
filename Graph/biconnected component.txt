@@ -1,0 +1,84 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define mp make_pair
+#define mod 1000000007
+#define line cout<<"------------------------"<<endl;
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+vector<int> v[100];
+bool visit[100];
+int t ;
+int dis[100];
+int low[100];
+bool ans[100];
+stack<pair<int,int> > st;
+void dfs(int s,int par)
+{
+    dis[s]=t++;
+    low[s]=dis[s];
+    visit[s]=true;
+    int child=0;
+    for(auto x: v[s])
+    {
+        if(x==par) continue;
+        if(visit[x])
+        {
+            low[s]=min(low[s],dis[x]);
+            if(dis[x]<dis[s]) st.push(mp(s,x));
+            continue;
+        }
+        st.push(mp(s,x));
+        dfs(x,s);
+        low[s]=min(low[s],low[x]);
+        if(dis[s]<=low[x] and par!=-1)
+        {
+            while(st.top().first!=s or st.top().second!=x)
+            {
+                cout<<st.top().first<<' '<<st.top().second<<endl;
+                st.pop();
+            }
+            cout<<s<<' '<<x<<endl;
+            st.pop();
+        }
+        child++;
+        if(child>1 and par==-1)
+        {
+            while(st.top().first!=s or st.top().second!=x)
+            {
+                cout<<st.top().first<<' '<<st.top().second<<endl;
+                st.pop();
+            }
+            cout<<s<<' '<<x<<endl;
+            st.pop();
+        }
+    }
+}
+int  main()
+{
+    ///print biconnected component
+        v[1].pb(5);
+        v[5].pb(1);
+        v[5].pb(6);
+        v[6].pb(5);
+        v[7].pb(5);
+        v[5].pb(7);
+        v[8].pb(5);
+        v[5].pb(8);
+        v[7].pb(8);
+        v[8].pb(7);
+        v[6].pb(0);
+        v[0].pb(6);
+        v[1].pb(0);
+        v[0].pb(1);
+        dfs(1,-1);
+        line;
+        while(st.size())
+        {
+            cout<<st.top().first<<' '<<st.top().second<<endl;
+            st.pop();
+        }
+}

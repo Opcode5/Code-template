@@ -1,0 +1,92 @@
+#include <bits/stdc++.h>
+#define ull unsigned long long
+#define ll long long
+#define pb push_back
+#define endl '\n'
+#define mp make_pair
+#define mod 1000000007
+#define line cout<<"------------------------"<<endl;
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+const int mx=109;
+int graph[mx][mx];
+int par[mx],visit[mx];
+vector<int> v[mx];
+int n,m;
+bool bfs(int s, int t)
+{
+    memset(visit,0,sizeof visit);
+    queue<int>q;
+    q.push(s);
+    par[s]=-1;
+    visit[s]=true ;
+    while(q.size())
+    {
+        int a=q.front();
+        q.pop();
+        if(a==t) return true;
+        for(auto x: v[a])
+        {
+            if(visit[x]==false and graph[a][x])
+            {
+                visit[x]=true;
+                par[x]=a;
+                q.push(x);
+            }
+        }
+    }
+    return false;
+}
+int maxflow(int s, int t)
+{
+    int flow=0;
+    while(bfs(s,t))
+    {
+        int mini=INT_MAX;
+        int u=t;
+        while(u!=s)
+        {
+            int v=par[u];
+            mini=min(mini,graph[v][u]);
+            u=v;
+        }
+        u=t;
+        while(u!=s)
+        {
+            int v=par[u];
+            graph[v][u]-=mini;
+            graph[u][v]+=mini;
+            u=v;
+        }
+        flow+=mini;
+
+    }
+    return flow;
+}
+int main()
+{  
+	 ///time complexity  O(v*e*e)
+    cin>>n>>m;
+    for(int i=0;i<m;i++)
+    {
+        int a,b,c;
+        cin>>a>>b>>c;
+        graph[a][b]+=c; ///unidirectional graph with multiple edge between two nodes
+        v[a].pb(b);
+        v[b].pb(a); ///need to add reverse edge also
+    }
+    cout << "The maximum possible flow is " <<maxflow(1, 6)<<endl;
+
+}
+/*
+2 6
+0 3
+0 1 0
+1 2 5
+2 3 0
+1 3 5
+2 1 10000
+0 2 5
+*/

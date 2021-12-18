@@ -1,0 +1,68 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define mod 1000000007
+#define mp make_pair
+#define pb push_back
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+using namespace std;
+#include <bits/stdc++.h>
+#define ll long long
+#define mod 1000000007
+#define mp make_pair
+#define pb push_back
+#define filein freopen("input.txt","r",stdin)
+#define fileout freopen("output.txt","w",stdout)
+#define fast ios_base::sync_with_stdio(false); cin.tie(0);cout.tie(0);
+using namespace std;
+ll n,m;
+vector<pair<ll,ll> > v[100008];
+ll dis[100009];
+ll par[100009];
+void dij()
+{
+    for(ll i=0;i<=n;i++) dis[i]=LLONG_MAX;
+    priority_queue<pair<ll,ll> > pq;
+    pq.push(mp(0,1));
+    dis[1]=0;
+    par[1]=-1;
+    par[n]=INT_MAX;
+    while(pq.size())
+    {
+        ll u=pq.top().second;
+        int cost=-pq.top().first;
+        pq.pop();
+        if(cost>dis[u]) continue;
+        for(auto x: v[u])
+        {
+            if(cost+x.second<dis[x.first])
+            {
+                dis[x.first]=cost+x.second;
+                pq.push(mp(-dis[x.first],x.first));
+                par[x.first]=u;
+            }
+        }
+    }
+}
+void  path(ll x)
+{
+    if(x==-1) return ;
+    path(par[x]);
+    cout<<x<<' ';
+}
+int  main()
+{
+    cin>>n>>m;
+    for(ll i=0;i<m;i++)
+    {
+        ll a,b,c;
+        cin>>a>>b>>c;
+        v[a].pb(mp(b,c));
+        v[b].pb(mp(a,c));
+    }
+    dij();
+    if(par[n]==INT_MAX) cout<<-1<<endl;
+    else path(n);
+
+}
+
